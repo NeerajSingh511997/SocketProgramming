@@ -9,6 +9,28 @@
 #include <unistd.h>
 #include <netdb.h>
 
+/*
+| # HeaderFile(stdio.h) is basic input and output file.
+| 
+| # HeaderFile(stdlib.h) is used for performing general functions
+| 	like, exit(), rand_max, abort(), atof(), atoi(), atol();
+| 
+| # HeaderFile(string.h) is used for accessing the string functions
+| 	like, strncmp(), strcmp()
+| 
+| # HeaderFile(sys/types.h) is used for accessing the system calls
+| 	for allowing socket to access network protocols;
+| 
+| # HeaderFile(sys/socket.h) is used for accessing the socket related 
+| 	methodologies in the socket programming like, socket();
+|
+| # HeaderFile(netdb.h) is used for accessing the host related 
+|	methods of structure hostent;
+|
+| # HeaderFile(unistd.h) is used for accessing the methods like,
+|	read(), write() ;
+*/
+
 void error(char *msg) {
 	perror(msg);
 	exit(1);
@@ -17,7 +39,7 @@ void error(char *msg) {
 int main(int argc, char *argv[]) {
 
 	char buffer[1024];
-	int sockfd, newsockfd, status, portno, serv_len;
+	int sockfd, status, portno, serv_len;
 
 	struct sockaddr_in serv_addr;
 	/*	
@@ -64,20 +86,30 @@ int main(int argc, char *argv[]) {
 		error("Error in connecting to the server");
 	}
 
-	printf("Client: ");
-	bzero(buffer, 1024);
-	fgets(buffer, 1024, stdin);
-	status = write(sockfd, buffer, strlen(buffer));
-	if(status < 0) {
-		error("Error in writing to socket");
-	}
+	while(1) {
+		printf("Client: ");
+		bzero(buffer, 1024); 
+		fgets(buffer, 1024, stdin);
+		status = write(sockfd, buffer, strlen(buffer));
+		if(status < 0) {
+			error("Error in writing to socket");
+		}
 
-	bzero(buffer, 1024);
-	status = read(sockfd, buffer, 1024);
-	if(status < 0) {
-		error("Error in writing to socket");
+		bzero(buffer, 1024);
+		status = read(sockfd, buffer, 1024);
+		if(status < 0) {
+			error("Error in writing to socket");
+		}
+		printf("Server: %s \n", buffer);	
+
+		// terminating the loop;
+		int i = strncmp("Bye", buffer, 3);
+		if(i == 0) { 
+			break;
+		}
+
 	}
-	printf("Server: %s \n", buffer);
+	close(sockfd);
 	return 0;
 
 }

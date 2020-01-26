@@ -8,6 +8,25 @@
 #include <netinet/in.h>
 #include <unistd.h>
 
+/*
+| # HeaderFile(stdio.h) is basic input and output file.
+| 
+| # HeaderFile(stdlib.h) is used for performing general functions
+| 	like, exit(), rand_max, abort(), atof(), atoi(), atol();
+| 
+| # HeaderFile(string.h) is used for accessing the string functions
+| 	like, strncmp(), strcmp();
+|
+| # HeaderFile(sys/types.h) is used for accessing the system calls
+| 	for allowing socket to access network protocols;
+| 
+| # HeaderFile(sys/socket.h) is used for accessing the socket related 
+| 	methodologies in the socket programming;
+|
+| # HeaderFile(unistd.h) is used for accessing the methods like 
+|	read and write functions;
+*/
+
 void error(const char *msg) {
 	perror(msg);
 	exit(1);
@@ -66,21 +85,33 @@ int main(int argc, char *argv[]) {
 		exit(1);
 	}
 
-	// reseting buffer to zero;
-	bzero(buffer, 1024);
+	while(1) {
+		// reseting buffer to zero;
+		bzero(buffer, 1024);
 
-	// read the buffer from client;
-	n = read(newsockfd, buffer, 1024);
-	if(n < 0) {
-		error("Error: reading from the socket");
+		// read the buffer from client;
+		n = read(newsockfd, buffer, 1024);
+		if(n < 0) {
+			error("Error: reading from the socket");
+		}
+		printf("Client: %s \n", buffer);
+
+		// write to the buffer from server;
+		bzero(buffer, 1024);
+		fgets(buffer, 1024, stdin);
+		n = write(newsockfd, buffer, strlen(buffer));
+		if(n < 0) {
+			error("Error: writing to the socket");
+		}
+
+		int i = strncmp("Bye", buffer, 3);
+		if(i == 0) {
+			break;
+		}
+	
 	}
-	printf("Client: %s \n", buffer);
-
-	// write to the buffer from server;
-	n = write(newsockfd, "Got Your Message", 18);
-	if(n < 0) {
-		error("Error: writing to the socket");
-	}
-
+	
+	close(newsockfd);
+	close(sockfd);
 	return 0;
 }

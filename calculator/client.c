@@ -5,6 +5,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <unistd.h>
 #include <netdb.h>
 
 void error() {
@@ -21,7 +22,8 @@ int main(int argc ,char *argv[]) {
 
 	// Step 1: Declaraing Variables;
 	char buffer[1024];
-	int sockfd, value_1, value_2, choice, result, port_no, connect_status;
+	int value_1, value_2, result, choice;
+	int sockfd, port_no, connect_status, status;
 	struct sockaddr_in server_addr;
 	struct hostent * host;
 
@@ -44,7 +46,68 @@ int main(int argc ,char *argv[]) {
 	}
 
 	// Step 4: Working modules;
+	while(1) {
+		// memset(buffer, '/0', sizeof(buffer));
+		bzero(buffer, 1024);
+		status = read(sockfd, &buffer, 1024);
+		if(status < 0) {
+			error("Error: Socket read failed;");
+			exit(1);
+		}
+		printf("%s", buffer);
+		scanf("%d \n", &choice);
+		status = write(sockfd, &choice, sizeof(choice));
+		if(status < 0) {
+			error("Error: Socket write failed;");
+			exit(1);
+		}
+
+		if(choice !=5 ) {
+			// Enter the value_1;
+			// memset(buffer, '/0', 1024);
+			bzero(buffer, 1024);
+			status = read(sockfd, &buffer, sizeof(buffer));
+			if(status < 0) {
+				error("Error: Socket read failed;");
+				exit(1);
+			}
+			printf("%s", buffer);
+			scanf("%d", &value_1);
+			status = write(sockfd, &value_1, sizeof(value_1));
+			if(status < 0) {
+				error("Error: Socket write failed;");
+				exit(1);
+			}
+
+			// Enter the value_2;
+			// memset(buffer, '/0', 1024);
+			bzero(buffer, 1024);
+			status = read(sockfd, &buffer, sizeof(buffer));
+			if(status < 0) {
+				error("Error: Socket read failed;");
+				exit(1);
+			}
+			printf("%s", buffer);
+			scanf("%d", &value_2);
+			status = write(sockfd, &value_2, sizeof(int));
+			if(status < 0) {
+				error("Error: Socket write Failed;");
+				exit(1);
+			}
+
+			// Output the result;
+			status = read(sockfd, &result, sizeof(int));
+			if(status < 0) {
+				error("Error: Socket read Failed;");
+				exit(1);
+			}
 
 
+		}else {
+			printf("Bye...\n");
+			break;
+		}
+
+	}
 
 }

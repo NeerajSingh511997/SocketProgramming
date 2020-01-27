@@ -23,6 +23,7 @@ int main(int argc, char *argv[]) {
 	// Step 1: Declaration of Variables;
 	char buffer[256];
 	socklen_t addr_size;
+	int value_1, value_2, choice, result;
 	int sockfd, newsockfd, bind_status, status, port_no, socket_size;	
 	struct sockaddr_in server_addr, client_addr;
 	socklen_t client_len;	
@@ -50,27 +51,85 @@ int main(int argc, char *argv[]) {
 	listen(sockfd, 5);
 	socket_size = sizeof(server_addr);
 	newsockfd = accept(sockfd, (struct sockaddr*) &client_addr, &socket_size);
-
 	if(newsockfd < 0) {
 		error("Error: Client Socket creation failed \n");
 		exit(0);
 	}
 	
 	// Step 5: Working Modules;
+	while(1) {
+		// Menu Of the Calculator;
+		status = write(newsockfd, "Welcome Back, \n1. Addition \n2. Subtraction \n3.Multiplication \n4.Divide \n5.Exit \nEnter Your choice: ", sizeof("Welcome Back, \n1. Addition \n2. Subtraction \n3.Multiplication \n4.Divide \n5.Exit \nEnter Your choice: "));
+		if(status < 0) {
+			error("Error: Socket write failed\n");
+			exit(1);
+		}
+		status = read(newsockfd, &choice, sizeof(int));
+		if(status < 0) {
+			error("Error: Socket read failed;");
+			exit(1);
+		}
+		
+		if(choice != 5) {
+			// Enter the value_1;
+			status = write(newsockfd, "Enter Number 1: ", strlen("Enter Number 1: "));
+			if(status < 0) {
+				error("Error: Socket write failed;");
+				exit(1);
+			}
+			status = read(newsockfd, &value_1, sizeof(int));
+			if(status < 0) {
+				error("Error: Socket read failed;");
+				exit(1);
+			}
+			printf("Client: Number 1 is %d \n", value_1);
 
-	
+			// Enter the value_2;
+			status = write(newsockfd, "Enter Number 2: ", sizeof("Enter Number 2: "));
+			if(status < 0) {
+				error("Error: Socket write failed;");
+				exit(1);
+			}
+			status = read(newsockfd, &value_2, sizeof(int));
+			if(status < 0) {
+				error("Error: Socket read failed;");
+				exit(1);
+			}	
+			printf("Client: Number 2 is %d \n", value_2);
 
-	
+			switch(choice) {
+				case 1: 
+						result = value_1 + value_2;
+						break;
+				case 2:
+						result = value_1 - value_2;
+						break;
+				case 3:
+						result = value_1 * value_2;
+						break;
+				case 4:
+						if( value_1 == 0 || value_2 == 0 ) {
+							result = 0;
+							break;
+						}
+				default: 
+						break;
+			}
 
-	
+			status = write(newsockfd, &result, sizeof(result));
+			if(status < 0) {
+				error("Error: Socket write failed;");
+				exit(1);
+			}
 
-	
+		}else {
+			printf("Bye...\n");
+			break;
+		}
 
-	
+	}
 
-	
-
-	
-	
+	close(newsockfd);
+	return 0;
 
 }

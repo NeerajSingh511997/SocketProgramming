@@ -23,6 +23,9 @@
 | # HeaderFile(sys/socket.h) is used for accessing the socket related 
 | 	methodologies in the socket programming;
 |
+| # HeaderFile(netinet/in.h) is used for accessing the internet address family macros
+|	like, INADDR_ANY for IPv4 local host address, INADDR_BROADCAST for IPv4 broadcast address;
+|
 | # HeaderFile(unistd.h) is used for accessing the methods like 
 |	read and write functions;
 */

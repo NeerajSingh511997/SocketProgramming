@@ -55,7 +55,7 @@ int main(int argc ,char *argv[]) {
 			exit(1);
 		}
 		printf("%s", buffer);
-		scanf("%d \n", &choice);
+		scanf("%d", &choice);
 		status = write(sockfd, &choice, sizeof(choice));
 		if(status < 0) {
 			error("Error: Socket write failed;");
@@ -78,6 +78,7 @@ int main(int argc ,char *argv[]) {
 				error("Error: Socket write failed;");
 				exit(1);
 			}
+			printf("You selected option is %d", choice);
 
 			// Enter the value_2;
 			// memset(buffer, '/0', 1024);

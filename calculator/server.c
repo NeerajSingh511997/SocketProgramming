@@ -97,6 +97,7 @@ int main(int argc, char *argv[]) {
 			}	
 			printf("Client: Number 2 is %d \n", value_2);
 
+			// Control Statement;
 			switch(choice) {
 				case 1: 
 						result = value_1 + value_2;
@@ -121,6 +122,7 @@ int main(int argc, char *argv[]) {
 				error("Error: Socket write failed;");
 				exit(1);
 			}
+			printf("Result is %d", result);
 
 		}else {
 			printf("Bye...\n");
